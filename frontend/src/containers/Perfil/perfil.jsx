@@ -269,10 +269,10 @@ function Perfil() {
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const response = await axios.get(`http://localhost:3000/api/users/profile?name=${name}`);
+        const response = await axios.get(`jurisbridgeai-production.up.railway.app/api/users/profile?name=${name}`);
         setDescription(response.data.description || "");
 
-        const avatarRes = await axios.get(`http://localhost:3000/api/users/avatar/${name}`);
+        const avatarRes = await axios.get(`jurisbridgeai-production.up.railway.app/api/users/avatar/${name}`);
         const base64Image = avatarRes.data.image;
         if (base64Image) {
           setAvatarUrl(`data:image/png;base64,${base64Image}`);
@@ -284,7 +284,7 @@ function Perfil() {
 
     const fetchAllUsers = async () => {
       try {
-        const res = await axios.get("http://localhost:3000/api/users/all");
+        const res = await axios.get("jurisbridgeai-production.up.railway.app/api/users/all");
         setUsers(res.data);
       } catch (err) {
         console.error("Erro ao buscar usuários:", err);
@@ -320,7 +320,7 @@ function Perfil() {
         formData.append("name", name);
         formData.append("avatar", compressedFile);
 
-        await axios.put("http://localhost:3000/api/users/update-avatar", formData, {
+        await axios.put("jurisbridgeai-production.up.railway.app/api/users/update-avatar", formData, {
           headers: { "Content-Type": "multipart/form-data" },
         });
 
@@ -334,7 +334,7 @@ function Perfil() {
 
   const handleDescriptionSave = async (newDesc) => {
     try {
-      await axios.put("http://localhost:3000/api/users/update-description", {
+      await axios.put("jurisbridgeai-production.up.railway.app/api/users/update-description", {
         name,
         description: newDesc,
       });
