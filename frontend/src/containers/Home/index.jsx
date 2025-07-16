@@ -7,8 +7,6 @@ import Femida_Royalt from "../../assets/Femida_Royalty.png";
 import TypingEffect from "../../components/TypingEffect/Typing.jsx";
 import Male_Judge from "../../assets/Male_Judge.svg";
 
-
-
 // animações
 const fadeInUp = keyframes`
   from { opacity: 0; transform: translateY(25px); }
@@ -368,12 +366,10 @@ const Footer = styled.footer`
   box-shadow: 0 0 15px #b884ff66;
 `;
 
-
-
-
 function Home() {
   const [userName, setUserName] = useState(null);
   const [showModal, setShowModal] = useState(false);
+  const [modalTarget, setModalTarget] = useState("login");
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -385,17 +381,26 @@ function Home() {
     if (userName) {
       navigate("/jurisia");
     } else {
+      setModalTarget("jurisia");
+      setShowModal(true);
+    }
+  };
+
+  const handlePerfil = () => {
+    if (userName) {
+      navigate("/perfil");
+    } else {
+      setModalTarget("perfil");
       setShowModal(true);
     }
   };
 
   const closeModalAndGoToLogin = () => {
     setShowModal(false);
-    navigate("/login");
+    navigate("/login", { state: { redirectTo: modalTarget } });
   };
 
   const handleLogout = () => {
-    console.log("Ué")
     localStorage.removeItem("userName");
     setUserName(null);
     navigate(0);
@@ -408,14 +413,13 @@ function Home() {
       <StatusLogin>
         {userName ? (
           <>
-          Olá, {userName}
-          <LogoutButton onClick={handleLogout}>Logout</LogoutButton>
+            Olá, {userName}
+            <LogoutButton onClick={handleLogout}>Logout</LogoutButton>
           </>
         ) : (
           "Você não está logado"
         )}
       </StatusLogin>
-
 
       <Container>
         <StyledSearchBar type="text" placeholder="Como posso te ajudar hoje?" />
@@ -424,6 +428,9 @@ function Home() {
           <StyledLink to="/login">Login</StyledLink>
           <StyledButtonLink onClick={handleJurisIA}>
             Juris IA {userName ? "" : "🔒"}
+          </StyledButtonLink>
+          <StyledButtonLink onClick={handlePerfil}>
+            Meu Perfil {userName ? "" : "🔒"}
           </StyledButtonLink>
           <StyledLink to="/conectese">Conecte-se com um Advogado</StyledLink>
         </LinksContainer>
@@ -483,7 +490,7 @@ function Home() {
         <ModalOverlay>
           <ModalContent>
             <h3>⚠️ Acesso restrito</h3>
-            <p>Para acessar a <strong>Juris IA</strong>, você precisa estar logado.</p>
+            <p>Para acessar essa área, você precisa estar logado.</p>
             <button onClick={closeModalAndGoToLogin}>Fazer Login</button>
           </ModalContent>
         </ModalOverlay>
