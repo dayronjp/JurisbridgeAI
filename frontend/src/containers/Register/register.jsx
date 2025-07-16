@@ -172,7 +172,7 @@ const Register = () => {
     setError("");
 
     try {
-      const response = await axios.post("jurisbridgeai-production.up.railway.app/api/users/register", {
+      const response = await axios.post("https://jurisbridgeai-production.up.railway.app/api/users/register", {
         name: formData.name,
         email: formData.email,
         password: formData.password,

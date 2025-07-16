@@ -163,7 +163,7 @@ const Login = () => {
       console.log("Enviando login para o servidor...", formData);
 
       const response = await axios.post(
-        "jurisbridgeai-production.up.railway.app/api/users/login",
+        "https://jurisbridgeai-production.up.railway.app/api/users/login",
         {
           email: formData.email,
           password: formData.password,
