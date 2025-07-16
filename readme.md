@@ -3,7 +3,9 @@
 
 ## PROPOSTA
 
-O **Assistente Virtual Jurídico** é uma plataforma inovadora que combina tecnologia de ponta com expertise jurídica para democratizar o acesso à justiça. Em um cenário onde a desigualdade no acesso aos serviços jurídicos é uma realidade, especialmente para aqueles em situação de vulnerabilidade social e econômica, nossa plataforma surge como uma solução inclusiva e empática. O objetivo é oferecer a todos, independentemente de sua condição financeira, as ferramentas necessárias para navegar no sistema jurídico com mais confiança e clareza.
+O **Assistente Virtual Jurídico** é uma plataforma inovadora que combina tecnologia de ponta com expertise jurídica para democratizar o acesso à justiça. Em um cenário onde a desigualdade no acesso aos serviços jurídicos é uma realidade, especialmente para aqueles em situação de vulnerabilidade social e econômica, nossa plataforma surge como uma solução inclusiva e empática. O objetivo é oferecer a todos, independentemente de sua condição financeira, as ferramentas necessárias para navegar no sistema jurídico com mais confiança e clareza.<br>
+
+Você pode acessá-lo por aqui: https://jurisbridge-ai.vercel.app/
 
 ---
 
