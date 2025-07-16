@@ -1,6 +1,6 @@
 // backend/src/models/userModel.js
 import pool from '../db.js';
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 
 // Criar novo usuário
 export const createUser = async (name, email, password, type = 'user') => {
