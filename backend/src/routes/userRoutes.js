@@ -9,7 +9,7 @@ import {
   updateAvatar,
   getAvatar,
   getAllUsers      
-} from '../../../backend/src/controllers/userController.js';
+} from '../../src/controllers/userController.js';
 
 const router = express.Router();
 const storage = multer.memoryStorage();
