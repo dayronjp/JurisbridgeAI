@@ -237,7 +237,7 @@ export default function JurisIA() {
     setError(null);
 
     try {
-      const res = await axios.post("https://jurisbridgeai-production.up.railway.app/api/chat", {
+      const res = await axios.post("https://jurisbridgeai.onrender.com/api/chat", {
         prompt: input,
       });
       setAnswer(res.data.answer);
