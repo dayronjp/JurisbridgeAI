@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import axios from "axios";
 import styled, { createGlobalStyle, keyframes } from "styled-components";
 import { Link, useNavigate } from "react-router-dom";
@@ -6,10 +6,9 @@ import logo from "../../assets/logo_jb.png";
 import bridgejai from "../../assets/bridgejai.png";
 import { ArrowLeft } from "lucide-react";
 
+// Estilos globais
 const GlobalStyles = createGlobalStyle`
-  * {
-    margin: 0; padding: 0; box-sizing: border-box;
-  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
   body, #root {
     height: 100vh;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -20,47 +19,93 @@ const GlobalStyles = createGlobalStyle`
 `;
 
 const pulse = keyframes`
-  0%, 100% {
-    box-shadow: 0 0 6px #b8a8ff99;
-  }
-  50% {
-    box-shadow: 0 0 14px #b8a8ffcc;
-  }
+  0%, 100% { box-shadow: 0 0 6px #b8a8ff99; }
+  50% { box-shadow: 0 0 14px #b8a8ffcc; }
 `;
 
+const fadeIn = keyframes`
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+`;
+
+const bounce = keyframes`
+  0%, 80%, 100% { transform: scale(0); }
+  40% { transform: scale(1); }
+`;
+
+const blink = keyframes`
+  0%, 49% { opacity: 1; }
+  50%, 100% { opacity: 0; }
+`;
+
+// Container principal
 const Container = styled.div`
   height: 100vh;
   display: flex;
   flex-direction: column;
 `;
 
-const ResponseArea = styled.pre`
+// Wrapper da resposta
+const AnswerWrapper = styled.div`
   flex: 1;
-  padding: 2rem 3rem;
-  overflow-y: auto;
+  max-width: 950px;
+  margin: 2rem auto;
+  padding: 0 1rem;
   font-family: 'Roboto Mono', monospace;
-  font-size: 1.05rem;
-  line-height: 1.5;
+  font-size: 1.1rem;
+  line-height: 1.6;
+  overflow-y: auto;
+  animation: ${fadeIn} 0.6s ease;
+  color: #f3f3ff;
+  text-shadow: 0 0 12px rgba(200, 180, 255, 0.25);
+  text-align: left;
   white-space: pre-wrap;
-  user-select: text;
-  background: transparent;
-  -webkit-font-smoothing: antialiased;
+  overflow-wrap: break-word;
+
+  a {
+    color: #a0c4ff;
+    text-decoration: underline;
+  }
 
   scrollbar-width: thin;
   scrollbar-color: #a085ff66 transparent;
 
-  &::-webkit-scrollbar {
-    width: 10px;
-  }
-  &::-webkit-scrollbar-track {
-    background: transparent;
-  }
+  &::-webkit-scrollbar { width: 8px; }
+  &::-webkit-scrollbar-track { background: transparent; }
   &::-webkit-scrollbar-thumb {
     background-color: #a085ffcc;
     border-radius: 10px;
   }
 `;
 
+// Loader de bolinhas
+const LoadingDots = styled.div`
+  display: flex;
+  gap: 8px;
+  margin: 2rem 0;
+  padding-left: 1rem;
+  div {
+    width: 12px;
+    height: 12px;
+    background: #bca7ff;
+    border-radius: 50%;
+    animation: ${bounce} 1.4s infinite ease-in-out both;
+    box-shadow: 0 0 12px rgba(180, 160, 255, 0.7);
+  }
+  div:nth-child(1) { animation-delay: -0.32s; }
+  div:nth-child(2) { animation-delay: -0.16s; }
+`;
+
+// Cursor piscando
+const Cursor = styled.span`
+  display: inline-block;
+  width: 8px;
+  background: #d3c1ff;
+  margin-left: 2px;
+  animation: ${blink} 1s infinite;
+`;
+
+// Input e botão
 const InputBar = styled.form`
   display: flex;
   gap: 1rem;
@@ -75,7 +120,6 @@ const TextInput = styled.textarea`
   resize: none;
   border: none;
   outline: none;
-  box-shadow: none;
   border-radius: 24px;
   padding: 0.8rem 1.8rem;
   background: rgba(255, 255, 255, 0.1);
@@ -84,12 +128,7 @@ const TextInput = styled.textarea`
   max-height: 4rem;
   line-height: 1.3;
   transition: background-color 0.3s ease, box-shadow 0.3s ease;
-
-  &::placeholder {
-    color: #c1c1e6aa;
-    font-style: italic;
-  }
-
+  &::placeholder { color: #c1c1e6aa; font-style: italic; }
   &:focus {
     background: rgba(255, 255, 255, 0.15);
     box-shadow:
@@ -105,43 +144,29 @@ const SubmitButton = styled.button`
   width: 48px;
   height: 48px;
   cursor: pointer;
-  box-shadow:
-    0 0 10px #b4a9ffbb,
-    0 0 25px #a085ffcc;
+  box-shadow: 0 0 10px #b4a9ffbb, 0 0 25px #a085ffcc;
   display: flex;
   justify-content: center;
   align-items: center;
   transition: transform 0.3s ease, box-shadow 0.4s ease;
-
   &:hover:not(:disabled) {
     animation: ${pulse} 2s infinite;
     transform: scale(1.1);
-    box-shadow:
-      0 0 15px #d1caffcc,
-      0 0 35px #c4b3ffdd;
+    box-shadow: 0 0 15px #d1caffcc, 0 0 35px #c4b3ffdd;
   }
-
   &:disabled {
     cursor: not-allowed;
     opacity: 0.5;
-    animation: none;
-    transform: none;
     box-shadow: 0 0 10px #7e7e7e88;
   }
-
-  svg {
-    width: 22px;
-    height: 22px;
-    fill: #201f42;
-    filter: drop-shadow(0 0 1px rgba(0,0,0,0.15));
-  }
+  svg { width: 22px; height: 22px; fill: #201f42; }
 `;
 
+// Outros elementos
 const ErrorText = styled.div`
   color: #ff6f6f;
   text-align: center;
   margin-top: 8px;
-  user-select: none;
   font-weight: 600;
   text-shadow: 0 0 5px #ff6f6f99;
 `;
@@ -151,15 +176,10 @@ const Logo = styled.img`
   top: 1rem;
   right: 1.5rem;
   width: 100px;
-  height: auto;
   cursor: pointer;
   transition: transform 0.3s ease, filter 0.3s ease;
   z-index: 999;
-
-  &:hover {
-    transform: scale(1.1);
-    filter: drop-shadow(0 0 6px rgba(180, 160, 255, 0.6));
-  }
+  &:hover { transform: scale(1.1); filter: drop-shadow(0 0 6px rgba(180, 160, 255, 0.6)); }
 `;
 
 const BackgroundImage = styled.img`
@@ -167,21 +187,18 @@ const BackgroundImage = styled.img`
   top: 50%;
   left: 50%;
   width: 66%;
-  height: auto;
-  max-width: none;
   transform: translate(-50%, -50%);
   opacity: 0.04;
   pointer-events: none;
-  user-select: none;
   z-index: 0;
 `;
 
 const Title = styled.h1`
   position: absolute;
-  top: calc(50% + 160px); 
+  top: calc(50% + 160px);
   left: 50%;
   transform: translateX(-50%);
-  font-size: 3.3rem; 
+  font-size: 3.3rem;
   font-weight: 700;
   color: #ffffff13;
   text-shadow: 0 0 10px rgba(255, 255, 255, 0.08);
@@ -206,19 +223,51 @@ const BackButton = styled.button`
   box-shadow: 0 4px 8px rgba(0,0,0,0.1);
   transition: background 0.3s, transform 0.2s;
   z-index: 1000;
-
-  &:hover {
-    background: #e5e5e5;
-    transform: scale(1.05);
-  }
-
-  svg {
-    stroke: #7f5af0;
-    width: 20px;
-    height: 20px;
-  }
+  &:hover { background: #e5e5e5; transform: scale(1.05); }
+  svg { stroke: #7f5af0; width: 20px; height: 20px; }
 `;
 
+// Hook de digitação ajustado
+function useTypingEffect(text, speed = 25) {
+  const [displayed, setDisplayed] = useState("");
+
+  useEffect(() => {
+    if (!text) {
+      setDisplayed("");
+      return;
+    }
+
+    let i = 0;
+    setDisplayed(text[0] || "");
+    const interval = setInterval(() => {
+      i++;
+      if (i >= text.length) {
+        clearInterval(interval);
+        return;
+      }
+      setDisplayed((prev) => prev + text[i]);
+    }, speed);
+
+    return () => clearInterval(interval);
+  }, [text, speed]);
+
+  return displayed;
+}
+
+// Função que mantém links clicáveis e remove Markdown
+function stripMarkdownKeepLinks(mdText) {
+  if (!mdText) return "";
+
+  return mdText
+    .replace(/\[([^\]]+)\]\((https?:\/\/[^\)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>')
+    .replace(/(\*\*|__)(.*?)\1/g, "$2")
+    .replace(/(\*|_)(.*?)\1/g, "$2")
+    .replace(/`{1,3}(.*?)`{1,3}/g, "$1")
+    .replace(/~~(.*?)~~/g, "$1")
+    .replace(/!\[.*?\]\(.*?\)/g, "");
+}
+
+// Componente principal
 export default function JurisIA() {
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
@@ -226,6 +275,8 @@ export default function JurisIA() {
   const [error, setError] = useState(null);
   const responseRef = useRef(null);
   const navigate = useNavigate();
+
+  const typedAnswer = useTypingEffect(stripMarkdownKeepLinks(answer) || "");
 
   const handleChange = (e) => setInput(e.target.value);
 
@@ -240,9 +291,8 @@ export default function JurisIA() {
       const res = await axios.post("https://jurisbridgeai.onrender.com/api/chat", {
         prompt: input,
       });
-      setAnswer(res.data.answer);
+      setAnswer(res.data.answer || "");
       setInput("");
-
       setTimeout(() => {
         if (responseRef.current) {
           responseRef.current.scrollTop = responseRef.current.scrollHeight;
@@ -268,47 +318,34 @@ export default function JurisIA() {
       <BackButton onClick={() => navigate("/")}>
         <ArrowLeft />
       </BackButton>
-      <Link to="/">
-        <Logo src={logo} alt="JurisBridge Logo" />
-      </Link>
-
+      <Link to="/"><Logo src={logo} alt="JurisBridge Logo" /></Link>
       <BackgroundImage src={bridgejai} alt="Fundo decorativo bridgejai" />
       <Title>Juris IA</Title>
-
       <Container>
-        <ResponseArea
-          ref={responseRef}
-          aria-live="polite"
-          aria-label="Resposta da JurisIA"
-          tabIndex={0}
-        >
-          {answer || "Como posso te ajudar hoje?"}
-        </ResponseArea>
-
-        <InputBar onSubmit={handleSubmit} aria-label="Formulário para enviar pergunta">
+        <AnswerWrapper ref={responseRef}>
+          {loading ? (
+            <LoadingDots>
+              <div></div><div></div><div></div>
+            </LoadingDots>
+          ) : (
+            <div dangerouslySetInnerHTML={{ __html: typedAnswer || "Como posso te ajudar hoje?" }} />
+          )}
+          {!loading && <Cursor />}
+        </AnswerWrapper>
+        <InputBar onSubmit={handleSubmit}>
           <TextInput
-            aria-label="Digite sua dúvida jurídica"
             placeholder="Digite sua dúvida jurídica aqui..."
             value={input}
             onChange={handleChange}
             rows={1}
             disabled={loading}
-            spellCheck={false}
             onKeyDown={handleKeyDown}
           />
-          <SubmitButton
-            type="submit"
-            disabled={loading}
-            aria-busy={loading}
-            aria-label="Enviar pergunta"
-          >
-            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-              <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z" />
-            </svg>
+          <SubmitButton type="submit" disabled={loading}>
+            <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z" /></svg>
           </SubmitButton>
         </InputBar>
-
-        {error && <ErrorText role="alert">{error}</ErrorText>}
+        {error && <ErrorText>{error}</ErrorText>}
       </Container>
     </>
   );
