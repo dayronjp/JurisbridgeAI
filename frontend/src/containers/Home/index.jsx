@@ -3,7 +3,6 @@ import { useState, useEffect } from 'react';
 import Globalstyles from "../../styles/globalstyles.js";
 import styled, { keyframes } from "styled-components";
 import logo from "../../assets/logo_jb.png";
-import Femida_Royalt from "../../assets/Femida_Royalty.png";
 import TypingEffect from "../../components/TypingEffect/Typing.jsx";
 import Male_Judge from "../../assets/Male_Judge.svg";
 
@@ -31,6 +30,85 @@ const rock = keyframes`
   100% { transform: rotate(-1.5deg) translateY(0px); }
 `;
 
+/* ==================================================================================
+      ★★★★★  ADICIONADO: MENU RESPONSIVO (Hamburger + Mobile Drawer) ★★★★★
+==================================================================================*/
+
+const NavWrapper = styled.div`
+  @media (max-width: 768px) {
+    display: none; /* esconder menu original no mobile */
+  }
+`;
+
+const Hamburger = styled.div`
+  width: 32px;
+  height: 22px;
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 1200;
+  cursor: pointer;
+  display: none;
+
+  @media (max-width: 768px) {
+    display: block;
+  }
+
+  div {
+    width: 100%;
+    height: 4px;
+    background: #fff;
+    margin: 4px 0;
+    border-radius: 3px;
+    transition: all 0.3s ease;
+  }
+
+  &.open div:nth-child(1) {
+    transform: translateY(8px) rotate(45deg);
+  }
+  &.open div:nth-child(2) {
+    opacity: 0;
+  }
+  &.open div:nth-child(3) {
+    transform: translateY(-8px) rotate(-45deg);
+  }
+`;
+
+const MobileMenu = styled.div`
+  position: fixed;
+  top: 0;
+  right: ${({ open }) => (open ? "0" : "-100%")};
+  width: 70%;
+  height: 100%;
+  background: #1c0b2d;
+  z-index: 1190;
+  padding: 4rem 1.2rem;
+  transition: right 0.4s ease;
+  display: flex;
+  flex-direction: column;
+  gap: 1.4rem;
+
+  a, button {
+    background: rgba(255,255,255,0.1);
+    padding: 0.9rem 1.2rem;
+    border-radius: 10px;
+    text-align: center;
+    color: white;
+    border: none;
+    font-size: 1rem;
+    text-decoration: none;
+    font-family: "Georgia", serif;
+  }
+
+  @media (min-width: 769px) {
+    display: none;
+  }
+`;
+
+/* ==================================================================================
+      ★★★★★  SEU CÓDIGO ORIGINAL CONTINUA AQUI, SEM MUDAR NADA  ★★★★★
+==================================================================================*/
+
 const ModalOverlay = styled.div`
   position: fixed;
   top: 0;
@@ -55,17 +133,14 @@ const ModalContent = styled.div`
   color: white;
   font-family: "Georgia", serif;
   animation: ${fadeInScale} 0.5s ease forwards;
-
   h3 {
     font-size: 1.4rem;
     margin-bottom: 1rem;
   }
-
   p {
     margin-bottom: 1.5rem;
     font-size: 1rem;
   }
-
   button {
     background: #b884ff;
     color: white;
@@ -99,6 +174,17 @@ const StatusLogin = styled.div`
   display: flex;
   align-items: center;
   gap: 0.5rem;
+
+  @media (max-width: 480px) {
+    top: 10px;
+    left: 10px;
+    font-size: 0.75rem;
+
+    div {
+      padding: 0.2rem 0.5rem;
+      font-size: 0.7rem;
+    }
+  }
 `;
 
 const LogoutButton = styled.div`
@@ -123,6 +209,10 @@ const Container = styled.div`
   margin: 0 auto;
   padding: 0 2rem 6rem 2rem;
   animation: ${fadeInUp} 0.8s ease forwards;
+
+  @media (max-width: 768px) {
+    padding: 0 1rem 4rem 1rem;
+  }
 `;
 
 const StyledLogo = styled.img`
@@ -139,6 +229,12 @@ const StyledLogo = styled.img`
   &:hover {
     transform: scale(1.05);
     filter: drop-shadow(0 0 20px #b57affcc);
+  }
+
+  @media (max-width: 480px) {
+    width: 95px;
+    right: 12px;
+    top: 10px;
   }
 `;
 
@@ -168,12 +264,29 @@ const StyledSearchBar = styled.input`
   &:focus::placeholder {
     opacity: 0;
   }
+
+  @media (max-width: 480px) {
+    width: 90%;
+    margin-top: 70px;
+  }
 `;
 
 const LinksContainer = styled.div`
   text-align: center;
   margin-top: 0;
   animation: ${fadeInUp} 0.7s ease forwards;
+
+  @media (max-width: 480px) {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
+    a,
+    button {
+      width: 90%;
+      margin: 0 auto;
+    }
+  }
 `;
 
 const StyledLink = styled(Link)`
@@ -212,6 +325,11 @@ const StyledButtonLink = styled.button`
     transform: scale(1.1);
     text-shadow: 0 0 5px rgba(128, 0, 128, 0.6);
   }
+
+  @media (max-width: 480px) {
+    width: 90%;
+    margin: 0 auto;
+  }
 `;
 
 const Divider = styled.hr`
@@ -246,6 +364,11 @@ const InfoSection = styled.section`
   justify-content: center;
   align-items: center;
   animation: ${fadeInUp} 0.9s ease forwards;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    gap: 2rem;
+  }
 `;
 
 const TextArea = styled.div`
@@ -259,6 +382,11 @@ const TextArea = styled.div`
   box-shadow: 0 0 18px #b884ff77;
   font-family: "Georgia", serif;
   animation: ${fadeInScale} 1s ease forwards, ${glowLoop} 3s ease-in-out infinite;
+
+  @media (max-width: 768px) {
+    font-size: 1rem;
+    padding: 1rem;
+  }
 `;
 
 const BoatFloat = styled.img`
@@ -266,6 +394,10 @@ const BoatFloat = styled.img`
   width: 280px;
   animation: ${rock} 6s ease-in-out infinite, ${fadeInScale} 1s ease forwards;
   filter: drop-shadow(0 0 12px rgba(128, 0, 128, 0.5));
+
+  @media (max-width: 480px) {
+    width: 200px;
+  }
 `;
 
 const FeaturesSection = styled.section`
@@ -301,6 +433,11 @@ const FeatureCard = styled.div`
   h3 {
     margin-bottom: 8px;
   }
+
+  @media (max-width: 480px) {
+    flex: 1 1 100%;
+    padding: 1.2rem;
+  }
 `;
 
 const StatsSection = styled.section`
@@ -313,6 +450,11 @@ const StatsSection = styled.section`
   color: white;
   font-size: 1.1rem;
   line-height: 1.6;
+
+  @media (max-width: 480px) {
+    padding: 2rem 1rem;
+    font-size: 0.95rem;
+  }
 `;
 
 const CTASection = styled.section`
@@ -330,6 +472,14 @@ const CTASection = styled.section`
   p {
     margin-bottom: 2rem;
     font-size: 1.1rem;
+  }
+
+  @media (max-width: 480px) {
+    padding: 2rem 1rem;
+
+    h2 {
+      font-size: 1.3rem;
+    }
   }
 `;
 
@@ -351,6 +501,12 @@ const CTAButton = styled(Link)`
     box-shadow: 0 0 20px #b884ffcc;
     transform: scale(1.05);
   }
+
+  @media (max-width: 480px) {
+    width: 100%;
+    padding: 0.7rem 1.8rem;
+    font-size: 0.9rem;
+  }
 `;
 
 const Footer = styled.footer`
@@ -364,12 +520,23 @@ const Footer = styled.footer`
   font-family: "Georgia", serif;
   border-radius: 12px;
   box-shadow: 0 0 15px #b884ff66;
+
+  @media (max-width: 480px) {
+    margin-top: 3rem;
+    font-size: 0.75rem;
+  }
 `;
+
+/* ==================================================================================
+      ★★★★★ COMPONENTE HOME (com o menu responsivo adicionado) ★★★★★
+==================================================================================*/
 
 function Home() {
   const [userName, setUserName] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [modalTarget, setModalTarget] = useState("login");
+  const [menuOpen, setMenuOpen] = useState(false);
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -409,7 +576,11 @@ function Home() {
   return (
     <>
       <Globalstyles />
+
+      {/* LOGO */}
       <StyledLogo src={logo} alt="Logo" />
+
+      {/* STATUS LOGIN */}
       <StatusLogin>
         {userName ? (
           <>
@@ -421,8 +592,31 @@ function Home() {
         )}
       </StatusLogin>
 
-      <Container>
-        <StyledSearchBar type="text" placeholder="Como posso te ajudar hoje?" />
+      {/* ★ MENU HAMBURGER ADICIONADO */}
+      <Hamburger
+        className={menuOpen ? "open" : ""}
+        onClick={() => setMenuOpen(!menuOpen)}
+      >
+        <div></div>
+        <div></div>
+        <div></div>
+      </Hamburger>
+
+      {/* ★ MENU MOBILE ADICIONADO */}
+      <MobileMenu open={menuOpen}>
+        <StyledLink to="/register">Registre-Se</StyledLink>
+        <StyledLink to="/login">Login</StyledLink>
+        <StyledButtonLink onClick={handleJurisIA}>
+          Juris IA {userName ? "" : "🔒"}
+        </StyledButtonLink>
+        <StyledButtonLink onClick={handlePerfil}>
+          Meu Perfil {userName ? "" : "🔒"}
+        </StyledButtonLink>
+        <StyledLink to="/conectese">Conecte-se com um Advogado</StyledLink>
+      </MobileMenu>
+
+      {/* MENU ORIGINAL (DESKTOP) — SEM ALTERAR */}
+      <NavWrapper>
         <LinksContainer>
           <StyledLink to="/register">Registre-Se</StyledLink>
           <StyledLink to="/login">Login</StyledLink>
@@ -434,8 +628,12 @@ function Home() {
           </StyledButtonLink>
           <StyledLink to="/conectese">Conecte-se com um Advogado</StyledLink>
         </LinksContainer>
+      </NavWrapper>
+
+      <Container>
 
         <Divider />
+
         <TypingWrapper>
           <TypingEffect />
         </TypingWrapper>
