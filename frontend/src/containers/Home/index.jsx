@@ -185,7 +185,13 @@ const StatusLogin = styled.div`
       font-size: 0.7rem;
     }
   }
+
+  /* ⛔ ESCONDE NO MOBILE */
+  @media (max-width: 768px) {
+    display: none;
+  }
 `;
+
 
 const LogoutButton = styled.div`
   background-color: rgba(255, 255, 255, 0.08);
@@ -215,6 +221,8 @@ const Container = styled.div`
   }
 `;
 
+
+
 const StyledLogo = styled.img`
   position: absolute;
   top: 13px;
@@ -236,7 +244,13 @@ const StyledLogo = styled.img`
     right: 12px;
     top: 10px;
   }
+
+  /* ⛔ ESCONDE A LOGO NO MOBILE */
+  @media (max-width: 768px) {
+    display: none;
+  }
 `;
+
 
 const StyledSearchBar = styled.input`
   display: block;
@@ -342,18 +356,47 @@ const Divider = styled.hr`
   opacity: 0.9;
   animation: pulseGlow 2s ease-in-out infinite;
 
+  /* 🔥 Mobile: some visualmente, mas mantém o espaço */
+  @media (max-width: 768px) {
+    visibility: hidden;
+  }
+
   @keyframes pulseGlow {
     0%, 100% {
-      box-shadow: 0 0 10px rgba(255,255,255,0.6), 0 0 20px rgba(255,255,255,0.3), 0 0 30px rgba(255,255,255,0.2);
+      box-shadow: 0 0 10px rgba(255,255,255,0.6), 
+                  0 0 20px rgba(255,255,255,0.3), 
+                  0 0 30px rgba(255,255,255,0.2);
     }
     50% {
-      box-shadow: 0 0 15px rgba(255,255,255,0.9), 0 0 30px rgba(255,255,255,0.5), 0 0 45px rgba(255,255,255,0.3);
+      box-shadow: 0 0 15px rgba(255,255,255,0.9), 
+                  0 0 30px rgba(255,255,255,0.5), 
+                  0 0 45px rgba(255,255,255,0.3);
     }
   }
 `;
 
 const TypingWrapper = styled.div`
   animation: ${fadeInUp} 0.8s ease forwards;
+`;
+
+/* Static typing text for mobile (no typing animation) */
+const StaticTyping = styled.div`
+  animation: none; /* important: remove animation */
+  opacity: 1;
+  color: #fff;
+  text-align: center;
+  font-size: 1.25rem;
+  margin: 10px auto;
+  font-family: "Georgia", serif;
+
+  @media (min-width: 769px) {
+    display: none; /* only show this on mobile */
+  }
+
+  @media (max-width: 480px) {
+    font-size: 1rem;
+    margin-top: 70px;
+  }
 `;
 
 const InfoSection = styled.section`
@@ -365,10 +408,13 @@ const InfoSection = styled.section`
   align-items: center;
   animation: ${fadeInUp} 0.9s ease forwards;
 
-  @media (max-width: 768px) {
-    flex-direction: column;
-    gap: 2rem;
-  }
+@media (max-width: 768px) {
+  width: 100%;
+  padding: 0 1rem;     /* 🔥 cria respiro nas laterais */
+  box-sizing: border-box;
+  align-items: center; /* 🔥 centraliza tudo */
+}
+
 `;
 
 const TextArea = styled.div`
@@ -383,10 +429,21 @@ const TextArea = styled.div`
   font-family: "Georgia", serif;
   animation: ${fadeInScale} 1s ease forwards, ${glowLoop} 3s ease-in-out infinite;
 
-  @media (max-width: 768px) {
-    font-size: 1rem;
-    padding: 1rem;
-  }
+@media (max-width: 768px) {
+  flex: none;          /* 🔥 remove comportamento de flex esticando */
+  width: 100%;
+  max-width: 100%;     /* 🔥 agora não passa do container */
+  padding: 1rem 1rem;
+  font-size: 1rem;
+  line-height: 1.5;
+  margin: 0 auto;
+
+  background: rgba(40, 10, 60, 0.45);
+  box-shadow: 0 0 10px #b884ff55;
+  border-radius: 12px;
+}
+
+
 `;
 
 const BoatFloat = styled.img`
@@ -502,12 +559,16 @@ const CTAButton = styled(Link)`
     transform: scale(1.05);
   }
 
-  @media (max-width: 480px) {
+  @media (max-width: 768px) {
     width: 100%;
-    padding: 0.7rem 1.8rem;
-    font-size: 0.9rem;
+    padding: 2rem 1.2rem;
+    font-size: 1rem;
+    text-align: center;
+    box-sizing: border-box;
+    margin-top: 1rem;
   }
 `;
+
 
 const Footer = styled.footer`
   margin-top: 7rem;
@@ -536,6 +597,29 @@ function Home() {
   const [showModal, setShowModal] = useState(false);
   const [modalTarget, setModalTarget] = useState("login");
   const [menuOpen, setMenuOpen] = useState(false);
+
+  // novo state: detecta mobile para trocar TypingEffect por texto estático
+  const [isMobile, setIsMobile] = useState(() =>
+    typeof window !== "undefined" ? window.matchMedia("(max-width: 768px)").matches : false
+  );
+
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 768px)");
+    const handleChange = (e) => setIsMobile(e.matches);
+    // compatibilidade: addEventListener se disponível
+    if (mq.addEventListener) {
+      mq.addEventListener("change", handleChange);
+    } else {
+      mq.addListener(handleChange);
+    }
+    return () => {
+      if (mq.removeEventListener) {
+        mq.removeEventListener("change", handleChange);
+      } else {
+        mq.removeListener(handleChange);
+      }
+    };
+  }, []);
 
   const navigate = useNavigate();
 
@@ -634,9 +718,17 @@ function Home() {
 
         <Divider />
 
-        <TypingWrapper>
-          <TypingEffect />
-        </TypingWrapper>
+        {/* ---------- TYPING: mostra TypingEffect no desktop; mostra texto estático no mobile ---------- */}
+        {!isMobile ? (
+          <TypingWrapper>
+            <TypingEffect />
+          </TypingWrapper>
+        ) : (
+          <StaticTyping aria-hidden={false}>
+            {/* coloque aqui o mesmo texto que o TypingEffect mostra — ajuste conforme seu TypingEffect */}
+            Bem vindo ao JurisBridge. Aqui você encontra soluções jurídicas com tecnologia.
+          </StaticTyping>
+        )}
 
         <InfoSection>
           <TextArea>

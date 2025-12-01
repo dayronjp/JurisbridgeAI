@@ -8,7 +8,7 @@ import { ArrowLeft } from "lucide-react";
 
 
 const BackButton = styled.button`
-  position: absolute;
+  position: fixed;
   top: 20px;
   left: 20px;
   width: 42px;
@@ -20,6 +20,7 @@ const BackButton = styled.button`
   align-items: center;
   justify-content: center;
   cursor: pointer;
+  z-index: 999;
   box-shadow: 0 4px 8px rgba(0,0,0,0.1);
   transition: background 0.3s, transform 0.2s;
 
@@ -33,7 +34,13 @@ const BackButton = styled.button`
     width: 20px;
     height: 20px;
   }
+
+  /* 🔥 Esconde no mobile */
+  @media (max-width: 768px) {
+    display: none;
+  }
 `;
+
 
 const RegisterContainer = styled.div`
   max-inline-size: 400px;

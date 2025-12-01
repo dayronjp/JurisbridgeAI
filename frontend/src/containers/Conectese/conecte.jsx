@@ -73,11 +73,10 @@ const ButtonLink = styled(Link)`
   }
 `;
 
-// 🟣 Botão de voltar redondo com ícone
 const BackButton = styled.button`
-  position: absolute;
-  top: 1rem;
-  left: 1rem;
+  position: fixed;
+  top: 20px;
+  left: 20px;
   width: 42px;
   height: 42px;
   border-radius: 50%;
@@ -87,9 +86,9 @@ const BackButton = styled.button`
   align-items: center;
   justify-content: center;
   cursor: pointer;
+  z-index: 999;
   box-shadow: 0 4px 8px rgba(0,0,0,0.1);
   transition: background 0.3s, transform 0.2s;
-  z-index: 1000;
 
   &:hover {
     background: #e5e5e5;
@@ -100,6 +99,11 @@ const BackButton = styled.button`
     stroke: #7f5af0;
     width: 20px;
     height: 20px;
+  }
+
+  /* 🔥 Esconde no mobile */
+  @media (max-width: 768px) {
+    display: none;
   }
 `;
 

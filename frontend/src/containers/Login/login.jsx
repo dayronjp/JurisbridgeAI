@@ -7,7 +7,7 @@ import { useNavigate, Link } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
 
 const BackButton = styled.button`
-  position: absolute;
+  position: fixed;
   top: 20px;
   left: 20px;
   width: 42px;
@@ -19,6 +19,7 @@ const BackButton = styled.button`
   align-items: center;
   justify-content: center;
   cursor: pointer;
+  z-index: 999;
   box-shadow: 0 4px 8px rgba(0,0,0,0.1);
   transition: background 0.3s, transform 0.2s;
 
@@ -32,17 +33,29 @@ const BackButton = styled.button`
     width: 20px;
     height: 20px;
   }
+
+  /* 🔥 Esconde no mobile */
+  @media (max-width: 768px) {
+    display: none;
+  }
 `;
+
+
 
 const LoginContainer = styled.div`
   max-inline-size: 400px;
-  margin: 50px auto;
-  padding: 2rem;
+  margin: 50px auto; /* volta ao padrão elegante */
+  padding: 4.5rem 2rem 2rem 2rem; /* 🔥 espaço interno para o botão */
   background: #fff;
   border-radius: 12px;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+
+  @media (max-width: 768px) {
+    padding-top: 5rem; /* 🔥 ainda mais espaço no mobile */
+  }
 `;
+
 
 const Title = styled.h2`
   text-align: center;
@@ -197,12 +210,17 @@ const Login = () => {
     }
   };
 
-  return (
-    <LoginContainer>
-        <BackButton onClick={() => navigate("/")}>
+return (
+  <>
+    {/* Botão de voltar FIXO no canto da tela */}
+    <BackButton onClick={() => navigate("/")}>
       <ArrowLeft />
-      </BackButton>
+    </BackButton>
+
+    {/* Card de Login */}
+    <LoginContainer>
       <Title>Olá! Bem-Vindo novamente.</Title>
+
       <Form onSubmit={handleSubmit}>
         <FormGroup>
           <Label htmlFor="email">E-mail</Label>
@@ -229,6 +247,7 @@ const Login = () => {
         </FormGroup>
 
         {error && <ErrorMessage>{error}</ErrorMessage>}
+
         <Button type="submit" disabled={loading}>
           {loading ? "Carregando..." : "Entrar"}
         </Button>
@@ -237,10 +256,14 @@ const Login = () => {
       <RegisterLink>
         Ainda não tem uma conta? <Link to="/register">Registre-se</Link>
       </RegisterLink>
-
-      <ToastContainer />
     </LoginContainer>
-  );
+
+    {/* Toast fora do container pra não causar sobreposição */}
+    <ToastContainer />
+  </>
+);
+
+
 };
 
 export default Login;
