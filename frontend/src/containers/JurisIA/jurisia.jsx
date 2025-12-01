@@ -179,8 +179,15 @@ const Logo = styled.img`
   cursor: pointer;
   transition: transform 0.3s ease, filter 0.3s ease;
   z-index: 999;
+
   &:hover { transform: scale(1.1); filter: drop-shadow(0 0 6px rgba(180, 160, 255, 0.6)); }
+
+  /* 🔥 ESCONDER NO MOBILE */
+  @media (max-width: 768px) {
+    display: none;
+  }
 `;
+
 
 const BackgroundImage = styled.img`
   position: fixed;
@@ -223,9 +230,16 @@ const BackButton = styled.button`
   box-shadow: 0 4px 8px rgba(0,0,0,0.1);
   transition: background 0.3s, transform 0.2s;
   z-index: 1000;
+
   &:hover { background: #e5e5e5; transform: scale(1.05); }
   svg { stroke: #7f5af0; width: 20px; height: 20px; }
+
+  /* 🔥 ESCONDER NO MOBILE */
+  @media (max-width: 768px) {
+    display: none;
+  }
 `;
+
 
 // Hook de digitação ajustado
 function useTypingEffect(text, speed = 25) {

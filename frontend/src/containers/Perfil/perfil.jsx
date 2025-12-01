@@ -6,6 +6,10 @@ import axios from "axios";
 import { Pencil, ShieldCheck, UserRound, ArrowLeft } from "lucide-react";
 import imageCompression from "browser-image-compression";
 
+/* ==============================
+      🔥 MOBILE FIXES ADD
+============================== */
+
 const BackButton = styled.button`
   position: fixed;
   top: 20px;
@@ -33,6 +37,11 @@ const BackButton = styled.button`
     width: 20px;
     height: 20px;
   }
+
+  /* 🔥 Esconder no mobile */
+  @media (max-width: 768px) {
+    display: none;
+  }
 `;
 
 const Container = styled.div`
@@ -44,6 +53,11 @@ const Container = styled.div`
   justify-content: flex-start;
   padding: 3rem;
   box-sizing: border-box;
+
+  /* 🔥 reduzir espaçamento no mobile */
+  @media (max-width: 768px) {
+    padding: 1.5rem 1rem;
+  }
 `;
 
 const ProfileCard = styled.div`
@@ -54,12 +68,24 @@ const ProfileCard = styled.div`
   gap: 1.5rem;
   width: 100%;
   max-width: 800px;
+
+  /* 🔥 alinhar tudo ao centro no mobile */
+  @media (max-width: 768px) {
+    align-items: center;
+    text-align: center;
+  }
 `;
 
 const AvatarRow = styled.div`
   display: flex;
   align-items: center;
   gap: 2rem;
+
+  /* 🔥 no mobile vira coluna alinhada */
+  @media (max-width: 768px) {
+    flex-direction: column;
+    gap: 1rem;
+  }
 `;
 
 const AvatarWrapper = styled.div`
@@ -84,6 +110,12 @@ const Avatar = styled.div`
   &:hover {
     transform: scale(1.05);
   }
+
+  /* 🔥 reduzir no mobile */
+  @media (max-width: 768px) {
+    width: 110px;
+    height: 110px;
+  }
 `;
 
 const AvatarHint = styled.div`
@@ -95,7 +127,10 @@ const AvatarHint = styled.div`
 const Username = styled.h1`
   font-size: 1.5rem;
   margin: 0.2rem 0 0 0;
-  text-align: left;
+
+  @media (max-width: 768px) {
+    font-size: 1.3rem;
+  }
 `;
 
 const UserBadge = styled.div`
@@ -108,7 +143,10 @@ const UserBadge = styled.div`
   gap: 0.5rem;
   color: #ccc;
   font-weight: 500;
-  height: fit-content;
+
+  @media (max-width: 768px) {
+    font-size: 0.8rem;
+  }
 `;
 
 const DescriptionBox = styled.div`
@@ -120,6 +158,11 @@ const DescriptionBox = styled.div`
   color: #ccc;
   min-height: 180px;
   width: 100%;
+
+  @media (max-width: 768px) {
+    padding: 1rem;
+    font-size: 1rem;
+  }
 `;
 
 const EditIcon = styled(Pencil)`
@@ -146,6 +189,10 @@ const DescriptionInput = styled.textarea`
   color: white;
   font-family: inherit;
   outline: none;
+
+  @media (max-width: 768px) {
+    font-size: 1rem;
+  }
 `;
 
 const HiddenInput = styled.input`
@@ -159,6 +206,11 @@ const UserWrapper = styled.div`
   text-align: right;
   cursor: pointer;
   z-index: 10;
+
+  @media (max-width: 768px) {
+    right: 10px;
+    top: 10px;
+  }
 `;
 
 const UserDisplay = styled.div`
@@ -168,11 +220,10 @@ const UserDisplay = styled.div`
   background-color: rgba(255, 255, 255, 0.08);
   padding: 0.5rem 1rem;
   border-radius: 12px;
-  box-shadow: 0 0 10px rgba(184, 132, 255, 0.3);
-  transition: background-color 0.3s ease;
 
-  &:hover {
-    background-color: rgba(255, 255, 255, 0.15);
+  @media (max-width: 768px) {
+    font-size: 0.9rem;
+    padding: 0.4rem 0.8rem;
   }
 `;
 
@@ -183,11 +234,9 @@ const Dropdown = styled.div`
   padding: 0.5rem 1rem;
   color: white;
   font-size: 0.95rem;
-  box-shadow: 0 0 12px rgba(0, 0, 0, 0.3);
-  text-align: center;
 
-  &:hover {
-    background-color: #333;
+  @media (max-width: 768px) {
+    font-size: 0.85rem;
   }
 `;
 
@@ -196,6 +245,10 @@ const SearchSection = styled.div`
   text-align: center;
   width: 100%;
   max-width: 800px;
+
+  @media (max-width: 768px) {
+    margin-top: 2rem;
+  }
 `;
 
 const SearchInput = styled.input`
@@ -206,13 +259,10 @@ const SearchInput = styled.input`
   background-color: #1e1e2e;
   color: white;
   font-size: 1rem;
-  box-shadow: 0 0 10px rgba(127, 90, 240, 0.4);
-  outline: none;
-  transition: 0.3s ease;
 
-  &:focus {
-    background-color: #282843;
-    box-shadow: 0 0 15px rgba(127, 90, 240, 0.7);
+  @media (max-width: 768px) {
+    font-size: 0.9rem;
+    padding: 0.6rem;
   }
 `;
 
@@ -222,6 +272,10 @@ const UserGrid = styled.div`
   flex-wrap: wrap;
   gap: 1.5rem;
   justify-content: flex-start;
+
+  @media (max-width: 768px) {
+    justify-content: center;
+  }
 `;
 
 const UserCard = styled.div`
@@ -235,12 +289,10 @@ const UserCard = styled.div`
   flex-direction: column;
   align-items: center;
   text-align: center;
-  box-shadow: 0 0 14px rgba(127, 90, 240, 0.25);
-  transition: all 0.3s ease;
 
-  &:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 0 18px rgba(127, 90, 240, 0.35);
+  @media (max-width: 768px) {
+    max-width: 45%;
+    padding: 1rem;
   }
 `;
 
@@ -301,13 +353,9 @@ function Perfil() {
     navigate("/login");
   };
 
-  const toggleDropdown = () => {
-    setShowDropdown((prev) => !prev);
-  };
+  const toggleDropdown = () => setShowDropdown((prev) => !prev);
 
-  const handleAvatarClick = () => {
-    fileInputRef.current.click();
-  };
+  const handleAvatarClick = () => fileInputRef.current.click();
 
   const handleAvatarChange = async (e) => {
     const file = e.target.files[0];
@@ -324,8 +372,7 @@ function Perfil() {
           headers: { "Content-Type": "multipart/form-data" },
         });
 
-        const localUrl = URL.createObjectURL(compressedFile);
-        setAvatarUrl(localUrl);
+        setAvatarUrl(URL.createObjectURL(compressedFile));
       } catch (error) {
         console.error("Erro ao salvar avatar:", error);
       }
@@ -358,9 +405,12 @@ function Perfil() {
   return (
     <>
       <Globalstyles />
+
+      {/* 🔙 escondido no mobile */}
       <BackButton onClick={() => navigate("/")}>
         <ArrowLeft />
       </BackButton>
+
       <Container>
         {name && (
           <UserWrapper onClick={toggleDropdown}>
@@ -381,6 +431,7 @@ function Perfil() {
                 onChange={handleAvatarChange}
               />
             </AvatarWrapper>
+
             <UserBadge>
               {userType === "advogado" ? <ShieldCheck size={16} /> : <UserRound size={16} />}
               {userType === "advogado" ? "Conta Advogado" : "Conta Usuário"}
