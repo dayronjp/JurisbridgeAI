@@ -7,6 +7,11 @@ import chatRoutes from './routes/chatRoutes.js';
 
 const app = express();
 
+// ROTA RAIZ — NECESSÁRIA PARA RENDER FUNCIONAR
+app.get("/", (req, res) => {
+  res.send("Servidor JurisBridge AI está online!");
+});
+
 // Configura CORS
 app.use(cors());
 
@@ -18,7 +23,6 @@ app.use(express.urlencoded({ extended: true, limit: '5mb' }));
 const upload = multer({
   limits: { fileSize: 1 * 1024 * 1024 }, // 1MB
 });
-
 
 // Rotas
 app.use('/api/users', userRoutes);
